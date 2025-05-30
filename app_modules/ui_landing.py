@@ -6,7 +6,7 @@ from .chat_utils import load_chats
 # --- Landing Page Function ---
 def show_landing_page():
     with st.container():
-        col1, col2, col3 = st.columns([1,1,1])
+        col1, col2, col3 = st.columns([1.5,1,1.5])
         with col2:
             landing_image_path = "assets/zensys.png"
             st.image(landing_image_path, use_container_width=True)
