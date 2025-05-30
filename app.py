@@ -250,7 +250,7 @@ if st.session_state.get("pdf_to_display_in_dialog"):
                 with open(_pdf_path_for_dialog_display, "rb") as f:
                     base64_pdf = base64.b64encode(f.read()).decode('utf-8')
 
-                pdf_display = F'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="500" type="application/pdf">'
+                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="500" style="border: none;"></iframe>'
 
                 st.markdown(pdf_display, unsafe_allow_html=True)
             view_pdf_in_dialog_function_content()    
