@@ -1,9 +1,9 @@
 import streamlit as st
+from streamlit_pdf_viewer import pdf_viewer
 import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
-import base64
 
 # --- Import custom modules using your specified style ---
 from app_modules import app_config, ui_landing, chat_utils
@@ -248,11 +248,10 @@ if st.session_state.get("pdf_to_display_in_dialog"):
             @st.dialog(title=" ", width="large")
             def view_pdf_in_dialog_function_content(): 
                 with open(_pdf_path_for_dialog_display, "rb") as f:
-                    base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+                    binary_content = f.read()
 
-                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="500" style="border: none;"></iframe>'
-
-                st.markdown(pdf_display, unsafe_allow_html=True)
+                pdf_viewer(input=binary_content, height=1000)
+                st.markdown(_pdf_path_for_dialog_display, unsafe_allow_html=True)
             view_pdf_in_dialog_function_content()    
     else:
         st.session_state.pdf_to_display_in_dialog = None
@@ -355,7 +354,7 @@ else:
                             except Exception: pass 
                             current_chat_data["gemini_cache_name"] = None
                             current_chat_data["gemini_cache_model"] = None
-                            current_chat_data["cache_creation_failed"] = False # Allow re-creation attempt
+                            current_chat_data["cache_creation_failed"] = False 
                             chat_utils.save_chat(ACTIVE_PROFILE_KEY, chat_title, current_chat_data)
                     
                     except genai.errors.ClientError as e_client_get:
