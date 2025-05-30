@@ -8,7 +8,7 @@ def show_landing_page():
     with st.container():
         col1, col2, col3 = st.columns([1,1,1])
         with col2:
-            landing_image_path = "assets/zentech.png"
+            landing_image_path = "assets/zensys.png"
             st.image(landing_image_path, use_container_width=True)
     st.title("🔍 Welcome to Your Financial Document Analyzer")
 

@@ -30,7 +30,7 @@ if not os.path.exists(app_config.BASE_CHAT_DIR):
 
 st.set_page_config(
     page_title="Statement Q&A Chat", layout="wide",
-    initial_sidebar_state="expanded", page_icon="assets/zentech.png" 
+    initial_sidebar_state="expanded", page_icon="assets/zensys.png" 
 )
 
 # Load CSS from external file
