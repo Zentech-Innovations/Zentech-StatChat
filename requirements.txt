@@ -2,3 +2,4 @@ streamlit
 google-generativeai
 python-dotenv
 streamlit_pdf_viewer
+google.genai
