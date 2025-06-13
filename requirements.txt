@@ -1,4 +1,8 @@
 streamlit
-google-generativeai
 python-dotenv
-streamlit_pdf_viewer
+google-generativeai
+openai
+pandas
+plotly
+yfinance
+streamlit-pdf-viewer

@@ -18,17 +18,13 @@ def load_chats(profile_key):
                 try:
                     with open(file_path, "r") as f:
                         data = json.load(f)
-                        if (
-                            isinstance(data, dict)
-                            and "pdf_path" in data
-                            and "messages" in data
-                        ):
+                        if isinstance(data, dict) and "pdf_path" in data and "messages" in data:
                             data.setdefault("gemini_cache_name", None)
                             data.setdefault("gemini_cache_model", None)
                             data.setdefault("cache_creation_failed", False)
+                            data.setdefault("openai_thread_id", None)
+                            data.setdefault("openai_file_id", None)
                             chats[os.path.splitext(file_name)[0]] = data
-                except json.JSONDecodeError:
-                    print(f"Warning: Could not decode JSON from {file_path}") 
                 except Exception as e:
                     print(f"Warning: Error loading chat file {file_path}: {e}")
     return chats
@@ -36,6 +32,10 @@ def load_chats(profile_key):
 def save_chat(profile_key, title, chat_data):
     profile_chat_dir = get_profile_chat_dir(profile_key)
     os.makedirs(profile_chat_dir, exist_ok=True)
-    file_path = os.path.join(profile_chat_dir, f"{title}.json")
-    with open(file_path, "w") as f:
-        json.dump(chat_data, f, indent=2)
+    safe_title = "".join(c if c.isalnum() or c in [' ', '-'] else "_" for c in title)
+    file_path = os.path.join(profile_chat_dir, f"{safe_title}.json")
+    try:
+        with open(file_path, "w") as f:
+            json.dump(chat_data, f, indent=2)
+    except Exception as e:
+        print(f"Error saving chat file {file_path}: {e}")

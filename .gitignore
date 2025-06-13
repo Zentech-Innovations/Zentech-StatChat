@@ -1,18 +1,13 @@
-# Environment variables
 .env
 
-# Python cache
-__pycache__/
 *.pyc
 *.pyo
 
-# IDE specific folders
 .vscode/
 .idea/
 
-# OS specific
 .DS_Store
 
-# Chats directory 
 chats/
-# documents/ 
+
+.streamlit/
