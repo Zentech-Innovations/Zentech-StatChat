@@ -4,8 +4,14 @@ import re
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+import streamlit_authenticator as stauth
 from app_modules import app_config, ui_landing, chat_utils,tool_declaration, ui_components
 from models import google_gemini as gemini, openai_chatgpt as openai
+
+st.set_page_config(
+    page_title="Statement Q&A Chat", layout="wide",
+    initial_sidebar_state="expanded", page_icon="assets/zensys.png"
+)
 
 # --- Environment & API Key Setup ---
 load_dotenv()
@@ -20,6 +26,26 @@ if not OPENAI_API_KEY:
     st.error("OPENAI_API_KEY not found. This is required. Please set it in your .env file.")
     st.stop()
 
+# --- AUTHENTICATION ---
+authenticator = stauth.Authenticate(
+    st.secrets['credentials'].to_dict(),
+    st.secrets['cookie']['name'],
+    st.secrets['cookie']['key'],
+    st.secrets['cookie']['expiry_days']
+)
+
+if not st.session_state.get("authentication_status"):
+    col1, col2, col3 = st.columns([1.5, 2, 1.5])
+
+    with col2:
+        authenticator.login(captcha=True)
+
+if st.session_state["authentication_status"] is False:
+    st.error('Username/password is incorrect')
+    st.stop()
+elif st.session_state["authentication_status"] is None:
+    st.stop()
+
 # --- Utility to Load CSS ---
 def load_css(css_file_path):
     try:
@@ -27,16 +53,11 @@ def load_css(css_file_path):
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
         st.warning(f"CSS file not found: {css_file_path}. Create './assets/style.css'")
+load_css("assets/style.css")
 
 # --- Main Application Setup  ---
 if not os.path.exists(app_config.BASE_CHAT_DIR):
     os.makedirs(app_config.BASE_CHAT_DIR, exist_ok=True)
-
-st.set_page_config(
-    page_title="Statement Q&A Chat", layout="wide",
-    initial_sidebar_state="expanded", page_icon="assets/zensys.png"
-)
-load_css("assets/style.css")
 
 # --- Main Application Logic ---
 if "active_profile" not in st.session_state or not st.session_state.active_profile:
@@ -44,7 +65,7 @@ if "active_profile" not in st.session_state or not st.session_state.active_profi
     st.session_state.chats = {}
     st.session_state.selected_model_name = app_config.DEFAULT_MODEL_NAME
     st.session_state.processing = False
-    ui_landing.show_landing_page()
+    ui_landing.show_landing_page(authenticator)
     st.stop()
 
 ACTIVE_PROFILE_KEY = st.session_state.active_profile
@@ -92,7 +113,7 @@ if not st.session_state.get("active_chat"):
     st.session_state.active_chat = valid_predefined_titles[0] if valid_predefined_titles else None
 
 with st.sidebar:
-    ui_components.render_sidebar_content() 
+    ui_components.render_sidebar_content(authenticator) 
 
 ui_components.display_pdf_modal()
 

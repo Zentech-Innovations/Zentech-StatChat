@@ -1,8 +1,10 @@
 streamlit
 python-dotenv
 google-generativeai
+google-genai
 openai
 pandas
 plotly
 yfinance
 streamlit-pdf-viewer
+streamlit_authenticator

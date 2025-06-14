@@ -4,7 +4,10 @@ import os
 from .app_config import PROFILE_CONFIGS
 from .chat_utils import load_chats
 
-def show_landing_page():
+def show_landing_page(authenticator):
+    col1, col2 = st.columns([0.85, 0.15])
+    with col2:
+        authenticator.logout('Logout', 'main', key='landing_page_logout')
     with st.container():
         col1, col2, col3 = st.columns([1.5, 1, 1.5])
         with col2:
