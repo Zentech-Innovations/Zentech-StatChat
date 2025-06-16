@@ -1,3 +1,4 @@
+# app.py
 import streamlit as st
 import os
 import re
@@ -5,6 +6,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 import streamlit_authenticator as stauth
+from streamlit_authenticator.utilities.exceptions import LoginError
 from app_modules import app_config, ui_landing, chat_utils,tool_declaration, ui_components
 from models import google_gemini as gemini, openai_chatgpt as openai
 
@@ -38,13 +40,21 @@ if not st.session_state.get("authentication_status"):
     col1, col2, col3 = st.columns([1.5, 2, 1.5])
 
     with col2:
-        authenticator.login(captcha=True)
-
-if st.session_state["authentication_status"] is False:
-    st.error('Username/password is incorrect')
-    st.stop()
-elif st.session_state["authentication_status"] is None:
-    st.stop()
+        try:
+            authenticator.login(captcha=True)
+        except LoginError as e:
+            if "Captcha entered incorrectly" in str(e):
+                st.error('Captcha is incorrect')
+                st.stop()
+        except Exception as e:
+            st.error(f"An unexpected error occurred during login: {e}")
+            st.session_state["authentication_status"] = False
+            st.stop()
+        if st.session_state["authentication_status"] is False:
+            st.error('Username/password is incorrect')
+            st.stop()
+        elif st.session_state["authentication_status"] is None:
+            st.stop()
 
 # --- Utility to Load CSS ---
 def load_css(css_file_path):

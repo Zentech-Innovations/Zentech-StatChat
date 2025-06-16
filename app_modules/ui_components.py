@@ -53,7 +53,7 @@ def render_sidebar_content(authenticator):
             st.warning("OpenAI API Key not found for this session.")
     elif "(Google)" in current_selected_model_name:
         if not (st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")):
-            st.error("GEMINI_API_KEY not found.")
+            st.warning("GEMINI_API_KEY not found.")
 
     st.markdown("---")
     
