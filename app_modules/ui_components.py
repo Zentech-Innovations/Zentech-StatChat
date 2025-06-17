@@ -110,7 +110,7 @@ def display_pdf_modal():
                 def view_pdf_in_dialog_function_content():
                     with open(_pdf_path_for_dialog_display, "rb") as f:
                         binary_content = f.read()
-                    pdf_viewer(input=binary_content, height=1000)
+                    pdf_viewer(input=binary_content, height=1000, annotations=[])
                     st.markdown(os.path.basename(_pdf_path_for_dialog_display), unsafe_allow_html=True)
                 view_pdf_in_dialog_function_content()
 
