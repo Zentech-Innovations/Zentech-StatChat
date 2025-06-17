@@ -101,13 +101,18 @@ def render_sidebar_content(authenticator):
                 st.rerun()
 
 def display_pdf_modal():
-    pdf_path = st.session_state.get("pdf_to_display_in_dialog")
-    if pdf_path:
+    if st.session_state.get("pdf_to_display_in_dialog"):
+        _pdf_path_for_dialog_display = st.session_state.pdf_to_display_in_dialog
         st.session_state.pdf_to_display_in_dialog = None
-        if os.path.exists(pdf_path):
-            with open(pdf_path, "rb") as f:
-                binary_content = f.read()
-            pdf_viewer(input=binary_content, height=800, width=700)
+        if _pdf_path_for_dialog_display and os.path.exists(_pdf_path_for_dialog_display):
+            if hasattr(st, 'dialog'):
+                @st.dialog(title=" ", width="large")
+                def view_pdf_in_dialog_function_content():
+                    with open(_pdf_path_for_dialog_display, "rb") as f:
+                        binary_content = f.read()
+                    pdf_viewer(input=binary_content, height=1000)
+                    st.markdown(os.path.basename(_pdf_path_for_dialog_display), unsafe_allow_html=True)
+                view_pdf_in_dialog_function_content()
 
 def display_chat_history(current_chat_messages):
     for msg in current_chat_messages:
